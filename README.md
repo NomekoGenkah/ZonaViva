@@ -87,7 +87,7 @@ npm install
 npm run dev
 ```
 
-The Vite dev server proxies `/api/*` to `http://localhost:8000`, so no CORS configuration is needed.
+The Vite dev server proxies `/api/v1/*` to `http://localhost:8000`, so no CORS configuration is needed.
 
 Open http://localhost:5173.
 
@@ -95,7 +95,7 @@ Open http://localhost:5173.
 
 ## API Reference
 
-### `POST /upload`
+### `POST /api/v1/upload`
 
 Upload a video file for processing.
 
@@ -113,7 +113,7 @@ Upload a video file for processing.
 
 ---
 
-### `GET /status/{job_id}`
+### `GET /api/v1/status/{job_id}`
 
 Poll the processing status of a job.
 
@@ -137,7 +137,7 @@ Poll the processing status of a job.
 
 ---
 
-### `GET /results/{job_id}`
+### `GET /api/v1/results/{job_id}`
 
 Retrieve the full analytics results for a completed job.
 
@@ -162,7 +162,7 @@ Returns `400` if the job is not yet complete, `404` if the job does not exist.
 
 ---
 
-### `GET /health`
+### `GET /api/v1/health`
 
 Basic health check used by Docker Compose.
 
@@ -181,7 +181,7 @@ Basic health check used by Docker Compose.
    - Runs YOLOv8n on each frame to count people (class 0).
    - Aggregates counts into a per-second timeline.
 4. Results are saved as a JSON file and the job status is set to `done`.
-5. The frontend polls `/status/{id}` every 2.5 seconds and renders the dashboard once complete.
+5. The frontend polls `/api/v1/status/{id}` every 2.5 seconds and renders the dashboard once complete.
 
 ---
 

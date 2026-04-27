@@ -17,13 +17,13 @@ export default function ResultsPage() {
 
     const poll = async () => {
       try {
-        const res = await fetch(`/api/status/${jobId}`);
+        const res = await fetch(`/api/v1/status/${jobId}`);
         if (!res.ok) throw new Error("Job not found");
         const data = await res.json();
         setJob(data);
 
         if (data.status === "done") {
-          const rRes = await fetch(`/api/results/${jobId}`);
+          const rRes = await fetch(`/api/v1/results/${jobId}`);
           if (!rRes.ok) throw new Error("Failed to fetch results");
           setResults(await rRes.json());
         } else if (data.status === "error") {

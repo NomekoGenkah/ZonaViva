@@ -54,9 +54,9 @@ Build a web-based system where:
 
 ## API Endpoints
 
-* POST /upload
-* GET /status/{id}
-* GET /results/{id}
+* POST /api/v1/upload
+* GET /api/v1/status/{id}
+* GET /api/v1/results/{id}
 
 ---
 
