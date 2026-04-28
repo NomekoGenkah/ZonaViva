@@ -23,7 +23,8 @@ ml/
 │   ├── raw/               # ← put your Caltech .seq + .vbb files here
 │   └── processed/         # auto-generated (frames, labels, dataset.yaml)
 ├── runs/                  # auto-generated (Ultralytics training output)
-└── models/                # auto-generated (best.pt copied here after training)
+├── models/                # auto-generated (best.pt copied here after training)
+└── reports/               # auto-generated markdown reports (one per run)
 ```
 
 ---
@@ -83,6 +84,14 @@ Requires a prior `convert` run.
 python pipeline.py --mode train
 ```
 
+### Generate report from an existing run
+
+Re-reads the dataset stats and `results.csv` without re-training.
+
+```bash
+python pipeline.py --mode report
+```
+
 ### Inference preview
 
 Opens an OpenCV window and runs the trained model over validation images.
@@ -118,6 +127,23 @@ python pipeline.py --mode full --config config/config.yaml
 
 ---
 
+## Report
+
+A markdown report is generated automatically after every `full` or `train` run and saved to `reports/report_YYYYMMDD_HHMMSS.md`. It contains:
+
+- **Configuration** — all parameters used for the run
+- **Dataset statistics** — train/val image counts, annotated vs empty frames, total person annotations, avg/max/min persons per frame
+- **Training results** — best epoch, mAP@0.5, mAP@0.5:0.95, precision, recall, box loss, cls loss
+- **Output files** — paths and sizes of all generated artifacts
+
+To regenerate a report from an existing run without re-training:
+
+```bash
+python pipeline.py --mode report
+```
+
+---
+
 ## GPU usage
 
 - `device: auto` — uses GPU if CUDA is available, otherwise CPU.
@@ -143,3 +169,4 @@ The pipeline logs the selected device at startup:
 | `data/processed/dataset.yaml` | Dataset config for Ultralytics |
 | `runs/caltech_pedestrian/` | Full Ultralytics training run |
 | `models/best.pt` | Best checkpoint (copied from runs/) |
+| `reports/report_YYYYMMDD_HHMMSS.md` | Markdown report (one per run) |

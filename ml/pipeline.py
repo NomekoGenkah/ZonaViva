@@ -21,6 +21,7 @@ sys.path.insert(0, str(ROOT))
 
 from scripts.convert_seq import extract_all_sequences
 from scripts.convert_vbb import convert_all_annotations
+from scripts.report import generate_report
 from scripts.visualize import visualize_predictions
 
 
@@ -186,6 +187,12 @@ def _step_train(cfg: dict) -> None:
         _log("ERROR", "best.pt not found after training — check runs/ directory")
 
 
+def _step_report(cfg: dict) -> None:
+    _log("INFO", "--- Generating report ---")
+    path = generate_report(cfg, ROOT)
+    _log("OK", f"Report saved → {path.relative_to(ROOT)}")
+
+
 def _step_visualize(cfg: dict) -> None:
     models_dir    = ROOT / cfg["output"]["models_dir"]
     processed_dir = ROOT / cfg["data"]["processed_dir"]
@@ -214,7 +221,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--mode",
-        choices=["full", "convert", "train", "visualize"],
+        choices=["full", "convert", "train", "visualize", "report"],
         default="full",
         help="Pipeline mode (default: full)",
     )
@@ -239,6 +246,10 @@ def main() -> None:
 
     if args.mode in ("full", "train"):
         _step_train(cfg)
+        _step_report(cfg)
+
+    if args.mode == "report":
+        _step_report(cfg)
 
     if args.mode == "visualize":
         _step_visualize(cfg)
