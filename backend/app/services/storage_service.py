@@ -19,10 +19,17 @@ def init_db():
             status      TEXT NOT NULL DEFAULT 'pending',
             created_at  TEXT NOT NULL,
             updated_at  TEXT NOT NULL,
-            error       TEXT
+            error       TEXT,
+            debug       INTEGER NOT NULL DEFAULT 0
         )
     """)
     conn.commit()
+    # Migration: add debug column for existing databases
+    try:
+        conn.execute("ALTER TABLE jobs ADD COLUMN debug INTEGER NOT NULL DEFAULT 0")
+        conn.commit()
+    except Exception:
+        pass  # column already exists
     conn.close()
 
 
@@ -32,16 +39,16 @@ def _connect() -> sqlite3.Connection:
     return conn
 
 
-def create_job(job_id: str, filename: str) -> dict:
+def create_job(job_id: str, filename: str, debug: bool = False) -> dict:
     now = datetime.utcnow().isoformat()
     conn = _connect()
     conn.execute(
-        "INSERT INTO jobs (job_id, filename, status, created_at, updated_at) VALUES (?, ?, 'pending', ?, ?)",
-        (job_id, filename, now, now),
+        "INSERT INTO jobs (job_id, filename, status, created_at, updated_at, debug) VALUES (?, ?, 'pending', ?, ?, ?)",
+        (job_id, filename, now, now, int(debug)),
     )
     conn.commit()
     conn.close()
-    return {"job_id": job_id, "filename": filename, "status": "pending", "created_at": now}
+    return {"job_id": job_id, "filename": filename, "status": "pending", "created_at": now, "debug": debug}
 
 
 def update_job_status(job_id: str, status: str, error: str = None):

@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routes import results, status, upload
+from app.routes import debug, results, status, upload
 from app.services.storage_service import init_db
 
 API_PREFIX = "/api/v1"
@@ -31,6 +31,7 @@ app.add_middleware(
 app.include_router(upload.router, prefix=API_PREFIX)
 app.include_router(status.router, prefix=API_PREFIX)
 app.include_router(results.router, prefix=API_PREFIX)
+app.include_router(debug.router, prefix=API_PREFIX)
 
 
 @app.get(f"{API_PREFIX}/health")

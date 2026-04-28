@@ -51,7 +51,7 @@ Requires: Docker + Docker Compose
 ```bash
 git clone <repo-url>
 cd ZonaViva
-docker-compose up --build
+docker compose up --build
 ```
 
 | Service | URL |
@@ -61,6 +61,30 @@ docker-compose up --build
 | API docs (Swagger) | http://localhost:8000/docs |
 
 > The first build downloads the YOLOv8n model (~6 MB) and bakes it into the image. Subsequent builds use the Docker layer cache.
+
+### Rebuilding after code changes
+
+Both images are layered so that heavy work (pip install, npm install, YOLOv8n model download) is cached separately from application code. Rebuilding after a code change is fast — Docker reuses every cached layer and only re-runs the code copy and compile steps.
+
+**Backend only** (Python code changed, `requirements.txt` unchanged):
+
+```bash
+docker compose build backend && docker compose up -d backend
+```
+
+**Frontend only** (React/CSS changed, `package.json` unchanged):
+
+```bash
+docker compose build frontend && docker compose up -d frontend
+```
+
+**Both** (any code changed):
+
+```bash
+docker compose build && docker compose up -d
+```
+
+> Use `--no-cache` only when `requirements.txt` or `package.json` changes and you need to force a fresh dependency install.
 
 ---
 
